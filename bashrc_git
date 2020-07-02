@@ -1,0 +1,70 @@
+# Git Bash
+
+# ---------------------------------------------------------------------- #
+# ------------------------------ ALIAS --------------------------------- #
+# ---------------------------------------------------------------------- #
+
+alias ga='git add'
+alias gb='git branch'
+alias gc='git commit -m'
+alias gco='git checkout'
+alias gd='git diff'
+alias gl='git log'
+alias gpl='git pull'
+alias gps='git push -u -f origin'
+alias gf='git fetch'
+alias gr='git rebase -i'
+alias grc='git rebase --continue'
+alias gs='git status'
+alias sm='gco master && gpl main master && gps master && gco -'
+
+# ---------------------------------------------------------------------- #
+# ------------------------------ HELP ---------------------------------- #
+# ---------------------------------------------------------------------- #
+
+# Print all available commands and how to use it
+# USAGE: bashgithelp
+bashgithelp() {
+    printf "==========================GIT BASH COMMANDS==========================\n\n\n"
+
+    printf "==========Git Add (git add)==========\n"
+    printf "     ga\n\n"
+
+    printf "==========Show local branches (git branch)==========\n"
+    printf "     gb\n\n"
+
+    printf "==========Git Commit (git commit -m)==========\n"
+    printf "     gc\n\n"
+
+    printf "==========Git Checkout (git checkout)==========\n"
+    printf "     gco\n\n"
+ 
+    printf "==========Git Diff (git diff)==========\n"
+    printf "     gd\n"
+
+    printf "==========Fetch from remote (git fetch)==========\n"
+    printf "     gf\n\n"
+ 
+    printf "==========Log commits (git log)==========\n"
+    printf "     gl\n\n"
+ 
+    printf "==========Pull from remote (git pull)==========\n"
+    printf "     gpl <remote name> <branch name>\n\n"
+
+    printf "==========Push to remote (forcedly) (git push -u -f origin)==========\n"
+    printf "     gps <branch name>\n\n"
+
+    printf "==========Git Rebase (git rebase -i)==========\n"
+    printf "     gr\n\n"
+
+    printf "==========Git Rebase Continue (git rebase --continue)==========\n"
+    printf "     grc\n\n"
+
+    printf "==========Git Status (git status)==========\n"
+    printf "     gs\n\n"
+
+    printf "==========Syncrhonize with main master==========\n"
+    printf "     sm\n\n"
+
+}
+
