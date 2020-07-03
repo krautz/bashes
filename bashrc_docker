@@ -1,0 +1,186 @@
+# Docker Bash
+
+# ---------------------------------------------------------------------- #
+# --------------------------- VARIABLES -------------------------------- #
+# ---------------------------------------------------------------------- #
+
+# Replace this variable value with the path to the docker-compose of your current project
+PROJECT_PATH='/root/postpersister/'
+
+# Replace this variable with a follow of all your docker-compose files
+DOCKER_COMPOSE_FOLLOW='docker-compose -f docker-compose.yml'
+
+if [ "$PROJECT_PATH" = "/root/postpersister/" ]
+then
+    source ~/.bashrc_postpersister
+fi
+
+# ---------------------------------------------------------------------- #
+# ------------------------------ ALIAS --------------------------------- #
+# ---------------------------------------------------------------------- #
+
+alias dbash='dockerbash'
+alias dci='dockerclearimages'
+alias dfr='dockerforcerestart'
+alias dl='dockerlist'
+alias dr='dockerrestart'
+alias ds='dockerstop'
+alias log='docker logs --tail=100 -f $1'
+
+# ---------------------------------------------------------------------- #
+# ---------------------------- FUNCTIONS-------------------------------- #
+# ---------------------------------------------------------------------- #
+
+
+# Enter /bin/bash containers
+# USAGE: 
+#   1 - "dockerbash <service_name>"
+dockerbash() {
+    # enter docker-compose directory
+    cd $PROJECT_PATH
+
+    # enter /bin/bash docker
+    docker-compose exec "$1" /bin/bash
+
+    # return to former directory
+    cd -
+}
+
+
+# Clear unused Docker images (WARNING: this will delete all images that are no up)
+# USAGE:
+#   1 - dockerclearimages
+dockerclearimages() {
+    docker image rm $(docker image ls | awk '{ print $3 }')
+}
+
+
+# Force Recreate (or start) all (or desired) Dockeres in desired environment
+# USAGE:
+#    1 - Restart to production environment -> "dockerforcerestart prod ("<services name>")
+#    2 - Restart to development environment -> "dockerforcerestart dev ("<services name>")
+dockerforcerestart() {
+
+    # enter docker-compose directory
+    cd $PROJECT_PATH
+    
+    # create local variable to store restart mode
+    local mode
+
+    # set restart mode to development
+    if [ "$1" = "dev" ]
+    then
+       mode="docker-compose -f docker-compose.yml -f docker-compose-dev.yml up -d --force-recreate"
+
+    # set restart mode to production
+    elif [ "$1" = 'prod' ]
+    then
+       mode="docker-compose up -d --force-recreate"
+
+    # wrong command: print error and abort
+    else
+        printf "Not correct usage! dockerforcerestart <dev | prod> (\"<services name>\")\n"
+        return
+    fi
+
+    # add desired dockers to be restarted
+    if [ -z "$2" ]
+    then
+        $mode
+    else
+        $mode $2
+    fi
+
+    # return to former directory
+    cd -
+}
+
+
+# List all Dockers
+# USAGE:
+#   1 - dockerlist
+dockerlist() {
+
+    # enter docker-compose directory
+    cd $PROJECT_PATH
+
+    # list all Dockers
+    $DOCKER_COMPOSE_FOLLOW ps
+
+    # return to former directory
+    cd -
+}
+
+
+# Restart all (or desired) Dockers
+# USAGE:
+#   1 - dockerrestart ("<service name>")
+dockerrestart() {
+
+    # enter docker-compose directory
+    cd $PROJECT_PATH
+
+    # restart all (or desired) Dockers
+    docker-compose restart $1
+
+    # return to former directory
+    cd -
+}
+
+
+# Stop all (or desired)  Dockers
+# USAGE:
+#   1 - dockerstop ("<services name>")
+dockerstop() {
+
+    # enter docker-compose directory
+    cd $PROJECT_PATH
+
+    # stop all dockers (orphans included)
+    if [ -z "$1" ]
+    then
+        docker-compose down --remove-orphans
+
+    # stop passed dockers
+    else
+        $DOCKER_COMPOSE_FOLLOW stop $1
+        $DOCKER_COMPOSE_FOLLOW rm -f $1
+
+    fi
+
+    # return to former directory
+    cd -
+}
+
+
+# ---------------------------------------------------------------------- #
+# ------------------------------ HELP ---------------------------------- #
+# ---------------------------------------------------------------------- #
+
+# Print All available commands and how to use it
+# USAGE: bashdockerhelp
+bashdockerhelp() {
+    printf "==========================DOCKER BASH COMMANDS==========================\n\n\n"
+
+    printf "==========Connect to a docker via bash==========\n"
+    printf "     <dockerbash | dbash> <service name>\n\n"
+
+    printf "==========Clean downloaded docker images that are not up==========\n"
+    printf "     <dockerclearimages | dci>\n\n"
+
+    printf "==========Recreate all (or desired) dockers in desired environment==========\n"
+    printf "     <dockerforcerestart | dfr> <dev | prod> (\"<service names>\")\n\n"
+
+    printf "==========List dockers==========\n"
+    printf "     <dockerlist | dl>\n\n"
+
+    printf "==========Restart all (or desired) dockers==========\n"
+    printf "     <dr> (\"<service names>\")\n\n"
+
+    printf "==========Stop and remove all (or desired) dockers==========\n"
+    printf "     <dockerstop | ds>  (\"<service names>\")\n\n"
+  
+    printf "==========Show docker log of the passed service==========\n"
+    printf "     <log> <service name>\n\n"    
+}
+
