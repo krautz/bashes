@@ -5,6 +5,7 @@
 # ---------------------------------------------------------------------- #
 
 alias connctvm='ssh -A root@192.168.122.11'
+alias mountvm='sshfs -o allow_other root@192.168.122.11:/root/projects/ ~/projects/vm'
 
 # ---------------------------------------------------------------------- #
 # ------------------------------ HELP ---------------------------------- #
@@ -18,5 +19,7 @@ bashvmhelp() {
     printf "==========Connect to VM==========\n"
     printf "     connectvm\n\n"
 
+    printf "==========Mount all desired folders on VM==========\n"
+    printf "     mountvm\n\n"
 }
 
