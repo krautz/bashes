@@ -5,14 +5,14 @@
 # ---------------------------------------------------------------------- #
 
 # Replace this variable value with the path to the docker-compose of your current project
-PROJECT_PATH='/root/postpersister/'
+PROJECT_PATH='/root/anotherredditclient/'
 
 # Replace this variable with a follow of all your docker-compose files
 DOCKER_COMPOSE_FOLLOW='docker-compose -f docker-compose.yml'
 
-if [ "$PROJECT_PATH" = "/root/postpersister/" ]
+if [ "$PROJECT_PATH" = "/root/anotherredditclient/" ]
 then
-    source ~/.bashrc_postpersister
+    source ~/.bashrc_anotherredditclient
 fi
 
 # ---------------------------------------------------------------------- #
@@ -25,7 +25,7 @@ alias dfr='dockerforcerestart'
 alias dl='dockerlist'
 alias dr='dockerrestart'
 alias ds='dockerstop'
-alias log='docker logs --tail=100 -f $1'
+alias log='docker logs --tail=100 -f'
 
 # ---------------------------------------------------------------------- #
 # ---------------------------- FUNCTIONS-------------------------------- #
