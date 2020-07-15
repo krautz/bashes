@@ -1,0 +1,48 @@
+# Another Reddit Client Bash
+
+# ---------------------------------------------------------------------- #
+# ------------------------------ ALIAS --------------------------------- #
+# ---------------------------------------------------------------------- #
+
+alias dssh='dockerssh'
+
+# ---------------------------------------------------------------------- #
+# ---------------------------- FUNCTIONS-------------------------------- #
+# ---------------------------------------------------------------------- #
+
+
+# Enter ssh containers
+# USAGE: 
+#   1 - "dockerssh <service_name>"
+dockerssh() {
+    # enter docker-compose directory
+    cd $PROJECT_PATH
+
+    # enter conversis container
+    if [ "$1" = "redditmediator" ]
+    then
+        ssh -A -p 10001 root@127.0.0.1
+ 
+    # invalid container
+    else
+        printf "Serviço não configurado em /root/.bashrc_anotherredditclient!\n"
+    fi
+
+    # return to former directory
+    cd -
+}
+
+
+# ---------------------------------------------------------------------- #
+# ------------------------------ HELP ---------------------------------- #
+# ---------------------------------------------------------------------- #
+
+# Print All available commands and how to use it
+# USAGE: bashdockerhelp
+bashdockerhelp() {
+    printf "==========================DOCKER BASH COMMANDS==========================\n\n\n"
+
+    printf "==========Connect to a docker via ssh==========\n"
+    printf "     <dockerssh | dssh> <service name>\n\n"
+}
+
