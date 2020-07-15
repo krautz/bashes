@@ -5,8 +5,8 @@
 # ---------------------------------------------------------------------- #
 
 alias connctvm='ssh -A root@192.168.122.11'
-alias mountgo='sshfs -o allow_other root@192.168.122.11:/root/go/ ~/go'
-alias mountprojects='sshfs -o allow_other root@192.168.122.11:/root/projects/ ~/projects/vm'
+alias mountgo='sshfs -o allow_other root@192.168.122.11:/root/devhome/go/ ~/go'
+alias mountprojects='sshfs -o allow_other root@192.168.122.11:/root/devhome/projects/ ~/projects/vm'
 alias mountvm='mountgo && mountprojects'
 
 # ---------------------------------------------------------------------- #
