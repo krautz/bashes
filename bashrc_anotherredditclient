@@ -18,10 +18,15 @@ dockerssh() {
     # enter docker-compose directory
     cd $PROJECT_PATH
 
-    # enter conversis container
+    # enter redditmediator container
     if [ "$1" = "redditmediator" ]
     then
         ssh -A -p 10001 root@127.0.0.1
+
+    # enter arcgraphql container
+    elif [ "$1" = "arcgraphql" ]
+    then
+        ssh -A -p 10002 root@127.0.0.1
  
     # invalid container
     else
