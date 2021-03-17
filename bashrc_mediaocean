@@ -1,0 +1,59 @@
+# Media Ocean Bash
+
+# ---------------------------------------------------------------------- #
+# --------------------------- VARIABLES -------------------------------- #
+# ---------------------------------------------------------------------- #
+
+# Project path
+MEDIAOCEAN_PATH='/home/caiokrauthamer/mediaocean/voxsupFrontend2/services/vf2'
+
+# ---------------------------------------------------------------------- #
+# ------------------------------ ALIAS --------------------------------- #
+# ---------------------------------------------------------------------- #
+
+alias activate='source env/bin/activate' 
+alias gclm='gitconfiglocalmediaocean'
+alias installdeps='cd $MEDIAOCEAN_PATH && npm ci && pip install -r requirements.txt && pip install numpy pandas --upgrade && python -m nltk.downloader punkt stopwords && cd -'
+alias lint='cd $MEDIAOCEAN_PATH && pre-commit && cd -'
+alias start='cd $MEDIAOCEAN_PATH && tools/debug && cd -'
+
+# ---------------------------------------------------------------------- #
+# ---------------------------- FUNCTIONS-------------------------------- #
+# ---------------------------------------------------------------------- #
+
+
+# Set git config local with mediaocean credentials
+# USAGE:
+#   1 - gitconfiglocalmediaocean
+gitconfiglocalmediaocean()
+{
+    # add local git configurations
+    git config --local user.email ckrauthamer@mediaocean.com
+    git config --local user.name "Caio Krauthamer"
+    git config --local core.editor vim
+}
+
+# ---------------------------------------------------------------------- #
+# ------------------------------ HELP ---------------------------------- #
+# ---------------------------------------------------------------------- #
+
+# Print all available commands and how to use it
+# USAGE: bashmediaoceanhelp
+bashmediaoceanhelp() {
+    printf "==========================MEDIA OCEAN COMMANDS==========================\n\n\n"
+
+    printf "==========Activate virtual environment==========\n"
+    printf "     activate\n\n"
+
+    printf "==========Config Git Locally==========\n"
+    printf "     gitconfiglocalmediaocean(gclm)\n\n"
+
+    printf "==========Install project dependencies==========\n"
+    printf "     installdeps\n\n"
+
+    printf "==========Run Linter==========\n"
+    printf "     lint\n\n"
+
+    printf "==========Start development server==========\n"
+    printf "     start\n\n"
+}
