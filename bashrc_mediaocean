@@ -12,6 +12,8 @@ MEDIAOCEAN_PATH='/home/caiokrauthamer/mediaocean/voxsupFrontend2/services/vf2'
 # ---------------------------------------------------------------------- #
 
 alias activate='source env/bin/activate' 
+alias entermysql='sudo mysql -u root -ppass'
+alias enterpsql='sudo -u postgres psql'
 alias gclm='gitconfiglocalmediaocean'
 alias installdeps='cd $MEDIAOCEAN_PATH && npm ci && pip install -r requirements.txt && pip install numpy pandas --upgrade && python -m nltk.downloader punkt stopwords && cd -'
 alias lint='cd $MEDIAOCEAN_PATH && pre-commit && cd -'
@@ -44,6 +46,12 @@ bashmediaoceanhelp() {
 
     printf "==========Activate virtual environment==========\n"
     printf "     activate\n\n"
+
+    printf "==========Enter mysql==========\n"
+    printf "     entermysql\n\n"
+
+    printf "==========Enter postgres==========\n"
+    printf "     enterpsql\n\n"
 
     printf "==========Config Git Locally==========\n"
     printf "     gitconfiglocalmediaocean(gclm)\n\n"
