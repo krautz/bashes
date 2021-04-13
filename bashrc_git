@@ -9,6 +9,7 @@ alias gb='git branch'
 alias gc='git commit -m'
 alias gca='git commit --amend'
 alias gco='git checkout'
+alias gcp='git cherry-pick'
 alias gd='git diff'
 alias gl='git log'
 alias gpl='git pull'
@@ -45,7 +46,10 @@ bashgithelp() {
 
     printf "==========Git Checkout (git checkout)==========\n"
     printf "     gco\n\n"
- 
+
+    printf "==========Git Cherry Pick (git cherry-pick)==========\n"
+    printf "     gcp\n\n"
+
     printf "==========Git Diff (git diff)==========\n"
     printf "     gd\n"
 
