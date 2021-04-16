@@ -11,17 +11,31 @@ MEDIAOCEAN_PATH='/home/caiokrauthamer/mediaocean/voxsupFrontend2/services/vf2'
 # ------------------------------ ALIAS --------------------------------- #
 # ---------------------------------------------------------------------- #
 
-alias activate='source env/bin/activate' 
+alias connectdeploy='sshuttle -r ckrauthamer@build.4cinsights.com 172.16.0.0/16'
 alias entermysql='mysql -u root -ppass'
 alias enterpsql='psql -Upostgres'
 alias gclm='gitconfiglocalmediaocean'
-alias installdeps='cd $MEDIAOCEAN_PATH && npm ci && pip install -r requirements.txt && pip install numpy pandas --upgrade && python -m nltk.downloader punkt stopwords && cd -'
 alias lint='cd $MEDIAOCEAN_PATH && pre-commit && cd -'
 alias start='cd $MEDIAOCEAN_PATH && tools/debug && cd -'
 
 # ---------------------------------------------------------------------- #
 # ---------------------------- FUNCTIONS-------------------------------- #
 # ---------------------------------------------------------------------- #
+
+
+# Activate virtual env on $MEDIAOCEAN_PATH
+# USAGE
+#   1 - activate [environemnt name (default: env)]
+activate()
+{
+    # no env name provided: using default env
+    if [ -z $1 ]
+    then
+        source $MEDIAOCEAN_PATH/env/bin/activate
+    else
+        source $MEDIAOCEAN_PATH/$1/bin/activate
+    fi
+}
 
 
 # Set git config local with mediaocean credentials
@@ -35,6 +49,33 @@ gitconfiglocalmediaocean()
     git config --local core.editor vim
 }
 
+
+# Install dependencies
+# USAGE
+#   1 - installdeps [pip requirements file (default: requirements.txt)]
+installdeps()
+{
+    # enter mediaocean dir
+    cd $MEDIAOCEAN_PATH
+
+    # install node dependencies
+    npm ci
+
+    # no env name provided: using default env
+    if [ -z $1 ]
+    then
+        pip install -r requirements.txt
+    else
+        pip install -r $1
+    fi
+
+    # upgrade numpy and pandas
+    pip install numpy pandas --upgrade && python -m nltk.downloader punkt stopwords
+
+    # go back to previous dir
+    cd -
+}
+
 # ---------------------------------------------------------------------- #
 # ------------------------------ HELP ---------------------------------- #
 # ---------------------------------------------------------------------- #
@@ -45,7 +86,10 @@ bashmediaoceanhelp() {
     printf "==========================MEDIA OCEAN COMMANDS==========================\n\n\n"
 
     printf "==========Activate virtual environment==========\n"
-    printf "     activate\n\n"
+    printf "     activate [env name (default: 'env')\n\n"
+
+    printf "==========Connect to deploy server==========\n"
+    printf "     connectdeploy\n\n"
 
     printf "==========Enter mysql==========\n"
     printf "     entermysql\n\n"
@@ -57,7 +101,7 @@ bashmediaoceanhelp() {
     printf "     gitconfiglocalmediaocean(gclm)\n\n"
 
     printf "==========Install project dependencies==========\n"
-    printf "     installdeps\n\n"
+    printf "     installdeps [requirements file (default: 'requirements.txt')\n\n"
 
     printf "==========Run Linter==========\n"
     printf "     lint\n\n"
