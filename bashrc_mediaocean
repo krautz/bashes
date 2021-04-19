@@ -52,7 +52,7 @@ gitconfiglocalmediaocean()
 
 # Install dependencies
 # USAGE
-#   1 - installdeps [pip requirements file (default: requirements.txt)]
+#   1 - installdeps <"upgrade" to upgrade pandas> [pip requirements file (default: requirements.txt)]
 installdeps()
 {
     # enter mediaocean dir
@@ -62,15 +62,21 @@ installdeps()
     npm ci
 
     # no env name provided: using default env
-    if [ -z $1 ]
+    if [ -z $2 ]
     then
         pip install -r requirements.txt
     else
-        pip install -r $1
+        pip install -r $2
     fi
 
     # upgrade numpy and pandas
-    pip install numpy pandas --upgrade && python -m nltk.downloader punkt stopwords
+    if [ $1 == "upgrade" ]
+    then
+        pip install numpy pandas --upgrade
+    fi
+
+    # run python stuff
+    python -m nltk.downloader punkt stopwords
 
     # go back to previous dir
     cd -
@@ -101,7 +107,7 @@ bashmediaoceanhelp() {
     printf "     gitconfiglocalmediaocean(gclm)\n\n"
 
     printf "==========Install project dependencies==========\n"
-    printf "     installdeps [requirements file (default: 'requirements.txt')\n\n"
+    printf "     installdeps <\"upgrade\" or \"no\"> [requirements file (default: 'requirements.txt')\n\n"
 
     printf "==========Run Linter==========\n"
     printf "     lint\n\n"
