@@ -7,6 +7,9 @@
 # Project path
 MEDIAOCEAN_PATH='/home/caiokrauthamer/mediaocean/voxsupFrontend2/services/vf2'
 
+# Default virtual env name
+DEFAULT_VIRTUAL_ENV='env'
+
 # ---------------------------------------------------------------------- #
 # ------------------------------ ALIAS --------------------------------- #
 # ---------------------------------------------------------------------- #
@@ -31,7 +34,7 @@ activate()
     # no env name provided: using default env
     if [ -z $1 ]
     then
-        source $MEDIAOCEAN_PATH/env/bin/activate
+        source $MEDIAOCEAN_PATH/$DEFAULT_VIRTUAL_ENV/bin/activate
     else
         source $MEDIAOCEAN_PATH/$1/bin/activate
     fi
