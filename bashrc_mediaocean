@@ -5,7 +5,7 @@
 # ---------------------------------------------------------------------- #
 
 # Project path
-MEDIAOCEAN_PATH='/home/caiokrauthamer/mediaocean/voxsupFrontend2/services/vf2'
+MEDIAOCEAN_PATH='/home/ckrauthamer/mediaocean/voxsupFrontend2/services'
 
 # Default virtual env name
 DEFAULT_VIRTUAL_ENV='env'
@@ -18,15 +18,16 @@ alias connectdeploy='sshuttle -r ckrauthamer@build.4cinsights.com 172.16.0.0/16'
 alias entermysql='mysql -u root -ppass'
 alias enterpsql='psql -Upostgres'
 alias gclm='gitconfiglocalmediaocean'
-alias lint='cd $MEDIAOCEAN_PATH && pre-commit && cd -'
-alias start='cd $MEDIAOCEAN_PATH && tools/debug && cd -'
+alias lint='pre-commit'
+alias starttv='bash debug run'
+alias startvf2='tools/debug'
 
 # ---------------------------------------------------------------------- #
 # ---------------------------- FUNCTIONS-------------------------------- #
 # ---------------------------------------------------------------------- #
 
 
-# Activate virtual env on $MEDIAOCEAN_PATH
+# Activate virtual env on current dir
 # USAGE
 #   1 - activate [environemnt name (default: env)]
 activate()
@@ -34,9 +35,9 @@ activate()
     # no env name provided: using default env
     if [ -z $1 ]
     then
-        source $MEDIAOCEAN_PATH/$DEFAULT_VIRTUAL_ENV/bin/activate
+        source $DEFAULT_VIRTUAL_ENV/bin/activate
     else
-        source $MEDIAOCEAN_PATH/$1/bin/activate
+        source $1/bin/activate
     fi
 }
 
@@ -58,9 +59,6 @@ gitconfiglocalmediaocean()
 #   1 - installdeps <"upgrade" to upgrade pandas> [pip requirements file (default: requirements.txt)]
 installdeps()
 {
-    # enter mediaocean dir
-    cd $MEDIAOCEAN_PATH
-
     # install node dependencies
     npm ci
 
@@ -80,9 +78,6 @@ installdeps()
 
     # run python stuff
     python -m nltk.downloader punkt stopwords
-
-    # go back to previous dir
-    cd -
 }
 
 # ---------------------------------------------------------------------- #
@@ -115,6 +110,9 @@ bashmediaoceanhelp() {
     printf "==========Run Linter==========\n"
     printf "     lint\n\n"
 
-    printf "==========Start development server==========\n"
-    printf "     start\n\n"
+    printf "==========Start tv development server==========\n"
+    printf "     starttv\n\n"
+
+    printf "==========Start vf2 development server==========\n"
+    printf "     startvf2\n\n"
 }
