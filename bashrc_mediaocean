@@ -18,9 +18,11 @@ alias connectdeploy='sshuttle -r ckrauthamer@build.4cinsights.com 172.16.0.0/16'
 alias entermysql='mysql -u root -ppass'
 alias enterpsql='psql -Upostgres'
 alias gclm='gitconfiglocalmediaocean'
+alias installprecommit='pre-commit install --overwrite'
 alias lint='pre-commit'
 alias starttv='bash debug run'
 alias startvf2='tools/debug'
+alias sm='gb -D nbcu-master || gf main && gco -t main/nbcu-master && gco -'
 
 # ---------------------------------------------------------------------- #
 # ---------------------------- FUNCTIONS-------------------------------- #
@@ -107,6 +109,9 @@ bashmediaoceanhelp() {
     printf "==========Install project dependencies==========\n"
     printf "     installdeps <\"upgrade\" or \"no\"> [requirements file (default: 'requirements.txt')\n\n"
 
+    printf "==========Install pre commit==========\n"
+    printf "     installprecommit\n\n"
+
     printf "==========Run Linter==========\n"
     printf "     lint\n\n"
 
@@ -115,4 +120,7 @@ bashmediaoceanhelp() {
 
     printf "==========Start vf2 development server==========\n"
     printf "     startvf2\n\n"
+
+    printf "==========Get latest master branch==========\n"
+    printf "     sm\n\n"
 }
