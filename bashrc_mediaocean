@@ -20,9 +20,9 @@ alias enterpsql='psql -Upostgres'
 alias gclm='gitconfiglocalmediaocean'
 alias installprecommit='pre-commit install --overwrite'
 alias lint='pre-commit'
-alias starttv='bash debug run'
+alias startctv='bash debug run'
 alias startvf2='tools/debug'
-alias sm='gb -D nbcu-master || gf main && gco -t main/nbcu-master && gco -'
+alias sm='gf main && gb -D nbcu-master || : && gco -t main/nbcu-master && gco -'
 
 # ---------------------------------------------------------------------- #
 # ---------------------------- FUNCTIONS-------------------------------- #
@@ -115,8 +115,8 @@ bashmediaoceanhelp() {
     printf "==========Run Linter==========\n"
     printf "     lint\n\n"
 
-    printf "==========Start tv development server==========\n"
-    printf "     starttv\n\n"
+    printf "==========Start ctv development server==========\n"
+    printf "     startctv\n\n"
 
     printf "==========Start vf2 development server==========\n"
     printf "     startvf2\n\n"
