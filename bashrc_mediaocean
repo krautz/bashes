@@ -10,12 +10,17 @@ MEDIAOCEAN_PATH='/home/ckrauthamer/mediaocean/voxsupFrontend2/services'
 # Default virtual env name
 DEFAULT_VIRTUAL_ENV='env'
 
+# MariaDB
+MARIADB_USER='root'
+MARIADB_PASSWORD='pass'
+MARIADB_HOST='localhost'
+
 # ---------------------------------------------------------------------- #
 # ------------------------------ ALIAS --------------------------------- #
 # ---------------------------------------------------------------------- #
 
 alias connectdeploy='sshuttle -r ckrauthamer@build.4cinsights.com 172.16.0.0/16'
-alias entermysql='mysql -u root -ppass'
+alias entermysql="mysql -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST -A"
 alias enterpsql='psql -Upostgres'
 alias gclm='gitconfiglocalmediaocean'
 alias installprecommit='pre-commit install --overwrite'
@@ -40,6 +45,38 @@ activate()
         source $DEFAULT_VIRTUAL_ENV/bin/activate
     else
         source $1/bin/activate
+    fi
+}
+
+
+# Apply a mysql dump
+# USAGE: applymysqldump <db name> [<table_name>]
+applymysqldump()
+{
+    # no table provided: dump from db dump file
+    if [ -z $2 ]
+    then
+        mysql -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $1 < $1.sql
+
+    # table provided: dump from table file
+    else
+        mysql -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $1 < $1_$2.sql
+    fi
+}
+
+
+# Genetare a mysql dump
+# USAGE: generatemysqldump <db name> [<table name>]
+generatemysqldump()
+{
+    # no table provided: dump all the db
+    if [ -z $2 ]
+    then
+        mysqldump -t -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $1 > $1.sql
+
+    # table provided: dump db specific table
+    else
+        mysqldump -t -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $1 $2 > $1_$2.sql
     fi
 }
 
@@ -91,6 +128,9 @@ installdeps()
 bashmediaoceanhelp() {
     printf "==========================MEDIA OCEAN COMMANDS==========================\n\n\n"
 
+    printf "==========Apply mysql dump==========\n"
+    printf "     applymysqldump <db name> [<table name>]\n\n"
+
     printf "==========Activate virtual environment==========\n"
     printf "     activate [env name (default: 'env')\n\n"
 
@@ -102,6 +142,9 @@ bashmediaoceanhelp() {
 
     printf "==========Enter postgres==========\n"
     printf "     enterpsql\n\n"
+
+    printf "==========Generate mysql dump==========\n"
+    printf "     generatemysqldump <db name> [<table name>]\n\n"
 
     printf "==========Config Git Locally==========\n"
     printf "     gitconfiglocalmediaocean(gclm)\n\n"
