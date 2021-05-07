@@ -20,13 +20,14 @@ MARIADB_HOST='localhost'
 # ---------------------------------------------------------------------- #
 
 alias connectdeploy='sshuttle -r ckrauthamer@build.4cinsights.com 172.16.0.0/16'
+alias ctvstart='bash debug run'
 alias entermysql="mysql -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST -A"
 alias enterpsql='psql -Upostgres'
 alias gclm='gitconfiglocalmediaocean'
 alias installprecommit='pre-commit install --overwrite'
 alias lint='pre-commit'
-alias startctv='bash debug run'
-alias startvf2='tools/debug'
+alias vf2shell='python ./server/manage.py shell'
+alias vf2start='tools/debug'
 alias sm='gf main && gb -D nbcu-master || : && gco -t main/nbcu-master && gco -'
 
 # ---------------------------------------------------------------------- #
@@ -54,13 +55,13 @@ activate()
 applymysqldump()
 {
     # no table provided: dump from db dump file
-    if [ -z $2 ]
+    if [ -z "$2" ]
     then
-        mysql -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $1 < $1.sql
+        pv $1.sql | mysql -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $1
 
     # table provided: dump from table file
     else
-        mysql -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $1 < $1_$2.sql
+        pv "$1___${2// /__}.sql" | mysql -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $1 
     fi
 }
 
@@ -70,13 +71,13 @@ applymysqldump()
 generatemysqldump()
 {
     # no table provided: dump all the db
-    if [ -z $2 ]
+    if [ -z "$2" ]
     then
-        mysqldump -t -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $1 > $1.sql
+        mysqldump -t -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $1 | pv > $1.sql
 
     # table provided: dump db specific table
     else
-        mysqldump -t -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $1 $2 > $1_$2.sql
+        mysqldump -t -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $1 $2 | pv > "$1___${2// /__}.sql"
     fi
 }
 
@@ -137,6 +138,9 @@ bashmediaoceanhelp() {
     printf "==========Connect to deploy server==========\n"
     printf "     connectdeploy\n\n"
 
+    printf "==========Start ctv development server==========\n"
+    printf "     ctvstart\n\n"
+
     printf "==========Enter mysql==========\n"
     printf "     entermysql\n\n"
 
@@ -158,11 +162,11 @@ bashmediaoceanhelp() {
     printf "==========Run Linter==========\n"
     printf "     lint\n\n"
 
-    printf "==========Start ctv development server==========\n"
-    printf "     startctv\n\n"
+    printf "==========Enter vf2 shell==========\n"
+    printf "     vf2shell\n\n"
 
     printf "==========Start vf2 development server==========\n"
-    printf "     startvf2\n\n"
+    printf "     vf2start\n\n"
 
     printf "==========Get latest master branch==========\n"
     printf "     sm\n\n"
