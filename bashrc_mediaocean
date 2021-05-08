@@ -15,6 +15,11 @@ MARIADB_USER='root'
 MARIADB_PASSWORD='pass'
 MARIADB_HOST='localhost'
 
+# Postgres
+POSTGRES_USER='postgres'
+PGPASSWORD='pass'
+POSTGRES_HOST='localhost'
+
 # ---------------------------------------------------------------------- #
 # ------------------------------ ALIAS --------------------------------- #
 # ---------------------------------------------------------------------- #
@@ -22,7 +27,7 @@ MARIADB_HOST='localhost'
 alias connectdeploy='sshuttle -r ckrauthamer@build.4cinsights.com 172.16.0.0/16'
 alias ctvstart='bash debug run'
 alias entermysql="mysql -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST -A"
-alias enterpsql='psql -Upostgres'
+alias enterpsql="psql -U$POSTGRES_USER -h $POSTGRES_HOST"
 alias gclm='gitconfiglocalmediaocean'
 alias installprecommit='pre-commit install --overwrite'
 alias lint='pre-commit'
@@ -66,6 +71,22 @@ applymysqldump()
 }
 
 
+# Apply a psql dump
+# USAGE: applypsqldump <db name> [<table_names (separated by a whitespace)>]
+applypsqldump()
+{
+    # no table provided: dump from db dump file
+    if [ -z "$2" ]
+    then
+        psql -U$POSTGRES_USER -h $POSTGRES_HOST $1 < $1.psql
+
+    # table provided: dump from table file
+    else
+        psql -U$POSTGRES_USER -h $POSTGRES_HOST $1 < "$1___${2// /__}.psql"
+    fi
+}
+
+
 # Genetare a mysql dump
 # USAGE: generatemysqldump <db name> [<table name>]
 generatemysqldump()
@@ -78,6 +99,22 @@ generatemysqldump()
     # table provided: dump db specific table
     else
         mysqldump -t -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $1 $2 | pv > "$1___${2// /__}.sql"
+    fi
+}
+
+
+# Genetare a psql dump
+# USAGE: generatepsqldump <db name> [<table name>]
+generatepsqldump()
+{
+    # no table provided: dump all the db
+    if [ -z "$2" ]
+    then
+        pg_dump --verbose -U$POSTGRES_USER -h $POSTGRES_HOST -d $1 > "$1.psql"
+
+    # table provided: dump db specific tables
+    else
+        pg_dump --verbose -U$POSTGRES_USER -h $POSTGRES_HOST -d $1 -t ${2// / -t } > "$1___${2// /__}.psql"
     fi
 }
 
@@ -132,6 +169,9 @@ bashmediaoceanhelp() {
     printf "==========Apply mysql dump==========\n"
     printf "     applymysqldump <db name> [<table name>]\n\n"
 
+    printf "==========Apply psql dump==========\n"
+    printf "     applypsqldump <db name> [<table names (separated by a whitespace)>]\n\n"
+
     printf "==========Activate virtual environment==========\n"
     printf "     activate [env name (default: 'env')\n\n"
 
@@ -149,6 +189,9 @@ bashmediaoceanhelp() {
 
     printf "==========Generate mysql dump==========\n"
     printf "     generatemysqldump <db name> [<table name>]\n\n"
+
+    printf "==========Generate psql dump==========\n"
+    printf "     generatepsqldump <db name> [<table names (separated by a whitespace)>]\n\n"
 
     printf "==========Config Git Locally==========\n"
     printf "     gitconfiglocalmediaocean(gclm)\n\n"
