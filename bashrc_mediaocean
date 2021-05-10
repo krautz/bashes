@@ -86,6 +86,23 @@ applypsqldump()
     fi
 }
 
+# Copy bash files to remote machines
+# USAGE: copybashtoremotemachine <machine name>
+copybashtoremotemachine()
+{
+    if [ -z $1 ]
+    then
+        printf "Machine name not provided\n"
+    else
+        scp ~/.bashrc_remote $1:.bashrc
+        scp ~/.bashrc_mediaocean_remote $1:.bashrc_mediaocean
+        scp ~/.gitconfig_remote $1:.gitconfig
+        scp ~/.bashrc_git $1:.bashrc_git
+        scp ~/.screenrc $1:.screenrc
+        scp ~/.vimrc $1:.vimrc
+        printf "Remember to update environment variables on .bashrc_mediaocean!\n"
+    fi
+}
 
 # Genetare a mysql dump
 # USAGE: generatemysqldump <db name> [<table name>]
@@ -177,6 +194,9 @@ bashmediaoceanhelp() {
 
     printf "==========Connect to deploy server==========\n"
     printf "     connectdeploy\n\n"
+
+    printf "==========Copy bashes to remote machine==========\n"
+    printf "     copybashtoremotemachine <remote machine name>\n\n"
 
     printf "==========Start ctv development server==========\n"
     printf "     ctvstart\n\n"
