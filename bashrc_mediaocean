@@ -96,7 +96,7 @@ copybashtoremotemachine()
         scp ~/.bashrc_git $1:.bashrc_git
         scp ~/.screenrc $1:.screenrc
         scp ~/.vimrc $1:.vimrc
-        printf "Remember to update environment variables on .bashrc_mediaocean!\n"
+        printf "Remember to add environment variables on .bashrc_mediaocean_variables on the remote machine!\n"
     fi
 }
 
