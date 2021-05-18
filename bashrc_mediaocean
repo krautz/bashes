@@ -56,30 +56,51 @@ activate()
 
 
 # Apply a mysql dump
-# USAGE: applymysqldump <dump file (format: "db name"___"table names separated by __".mysql)>
+# USAGE: applymysqldump <db name> <dump file name>
 applymysqldump()
 {
-    # extract db name from input file
-    db_name="${1//___/ }"
-    db_name=($db_name)
-    db_name="${db_name[0]}"
-
-    # apply dump
-    pv $1 | mysql -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $db_name
+    pv $2 | mysql -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $1
 }
 
 
 # Apply a psql dump
-# USAGE: applypsqldump <dump file (format: "db name"___"table names separated by __".psql)>
+# USAGE: applypsqldump <db name> <dump file name>
 applypsqldump()
 {
-    # extract db name from input file
-    db_name="${1//___/ }"
-    db_name=($db_name)
-    db_name="${db_name[0]}"
+    psql -U$POSTGRES_USER -h $POSTGRES_HOST $1 < $2
+}
 
-    # apply dump
-    psql -U$POSTGRES_USER -h $POSTGRES_HOST $db_name < $1
+# Get table from remote and apply a mysql or psql dump
+# USAGE: applyremotedump <remote dump file (format: "db name"___"table names separated by __".[mysql, psql])> <remote machine name>
+applyremotedump()
+{
+    # go to mediaocean folder
+    cd ~/mediaocean
+
+    # get dump
+    scp $2:$1 $1
+
+    # get db name and which db to use
+    file_split="${1//___/ }"
+    file_split="${file_split//./ }"
+    file_array=($file_split)
+    db_name="${file_array[0]}"
+    db_type="${file_array[2]}"
+
+    # apply the dump
+    if [ "$db_type" == "psql" ]
+    then
+        applypsqldump $db_name $1
+    elif [ "$db_type" == "sql" ]
+    then
+        applymysqldump $db_name $1
+    else
+        printf "Invalid dump file format. Valid formats: sql, psql\n"
+        return
+    fi
+
+    # move dump file to proper folder
+    mv $1 db_dumps/
 }
 
 # Copy bash files to remote machines
@@ -180,10 +201,13 @@ bashmediaoceanhelp() {
     printf "==========================MEDIA OCEAN COMMANDS==========================\n\n\n"
 
     printf "==========Apply mysql dump==========\n"
-    printf "     applymysqldump <dump file (format: \"db name\"___\"table names separated by __\".psql)>\n\n"
+    printf "     applymysqldump <db name> <dump file name>\n\n"
 
     printf "==========Apply psql dump==========\n"
-    printf "     applypsqldump <dump file (format: \"db name\"___\"table names separated by __\".psql)>\n\n"
+    printf "     applypsqldump <db name> <dump file name>\n\n"
+
+    printf "==========Apply psql or mysql dump from remote machine==========\n"
+    printf "     applyremotedump <remote dump file (format: \"db name\"___\"table names separated by __\".[mysql, psql])> <remote machine name>\n\n"
 
     printf "==========Activate virtual environment==========\n"
     printf "     activate [env name (default: 'env')\n\n"
