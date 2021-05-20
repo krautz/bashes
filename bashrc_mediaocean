@@ -134,6 +134,9 @@ generatemysqldump()
     else
         mysqldump -t -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $1 $2 | pv > "$1___${2// /__}.sql"
     fi
+
+    # show generated file name
+    echo "$1___${2// /__}.sql"
 }
 
 
@@ -150,6 +153,9 @@ generatepsqldump()
     else
         pg_dump --verbose -U$POSTGRES_USER -h $POSTGRES_HOST -d $1 -t ${2// / -t } > "$1___${2// /__}.psql"
     fi
+
+    # show generated file name
+    echo "$1___${2// /__}.psql"
 }
 
 
