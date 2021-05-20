@@ -103,6 +103,17 @@ applyremotedump()
     mv $1 db_dumps/
 }
 
+
+# Copy bash files to all remote machines
+# USAGE: copybashtoallremotemachine
+copybashtoallremotemachines()
+{
+    copybashtoremotemachine nbcu-dev-secure
+    copybashtoremotemachine nbcu-dev-non-secure
+    copybashtoremotemachine dev-kilo
+}
+
+
 # Copy bash files to remote machines
 # USAGE: copybashtoremotemachine <machine name>
 copybashtoremotemachine()
@@ -220,6 +231,9 @@ bashmediaoceanhelp() {
 
     printf "==========Connect to deploy server==========\n"
     printf "     connectdeploy\n\n"
+
+    printf "==========Copy bashes to all remote machines==========\n"
+    printf "     copybashtoallremotemachines\n\n"
 
     printf "==========Copy bashes to remote machine==========\n"
     printf "     copybashtoremotemachine <remote machine name>\n\n"
