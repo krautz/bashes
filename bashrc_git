@@ -21,7 +21,40 @@ alias gs='git status'
 alias gsth='git stash push -m'
 alias gsthp='git stash pop'
 alias gsthl='git stash list'
-alias sm='gco master && gpl main master && gps master && gco -'
+alias sb='syncbranch'
+
+# ---------------------------------------------------------------------- #
+# ---------------------------- FUNCTIONS-------------------------------- #
+# ---------------------------------------------------------------------- #
+
+
+# Get the most recent branch from the main repo
+# USAGE
+#   1 - syncbranch [branch name (default is master)]
+syncbranch()
+{
+    # no branch name provided: use master branch
+    if [ -z $1 ]
+    then
+        target_branch='master'
+
+    # branch name provided: use it
+    else
+        target_branch=$1
+    fi
+
+    # store current branch name
+    current_branch=$(gb | sed -n -e 's/^\* \(.*\)/\1/p')
+
+    # sync branch
+    gco -b tmp
+    gb -D $target_branch || :
+    gf main
+    gco -t main/$target_branch || :
+    gco $current_branch
+    gb -D tmp
+}
+
 
 # ---------------------------------------------------------------------- #
 # ------------------------------ HELP ---------------------------------- #
@@ -83,8 +116,8 @@ bashgithelp() {
     printf "==========Pop from stash (git stash pop)==========\n"
     printf "     gsthp [stash index]\n\n"
 
-    printf "==========Syncrhonize with main master==========\n"
-    printf "     sm\n\n"
+    printf "==========Syncrhonize with desired branch from main repo==========\n"
+    printf "     sb [<branch name> (default: master)]\n\n"
 
 }
 
