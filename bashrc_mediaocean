@@ -33,7 +33,6 @@ alias installprecommit='pre-commit install --overwrite'
 alias lint='pre-commit'
 alias vf2shell='python ./server/manage.py shell'
 alias vf2start='tools/debug'
-alias sm='gf main && gb -D nbcu-master || : && gco -t main/nbcu-master && gco -'
 
 # ---------------------------------------------------------------------- #
 # ---------------------------- FUNCTIONS-------------------------------- #
@@ -270,7 +269,4 @@ bashmediaoceanhelp() {
 
     printf "==========Start vf2 development server==========\n"
     printf "     vf2start\n\n"
-
-    printf "==========Get latest master branch==========\n"
-    printf "     sm\n\n"
 }
