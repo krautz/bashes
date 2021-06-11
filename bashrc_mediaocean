@@ -24,15 +24,19 @@ POSTGRES_HOST='localhost'
 # ------------------------------ ALIAS --------------------------------- #
 # ---------------------------------------------------------------------- #
 
+alias authzstart='bash debug'
+alias authztoken='bash debug token'
 alias connectdeploy='sshuttle -r ckrauthamer@build.4cinsights.com 172.16.0.0/16'
 alias ctvstart='bash debug run'
 alias entermysql="mysql -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST -A"
 alias enterpsql="psql -U$POSTGRES_USER -h $POSTGRES_HOST"
 alias gclm='gitconfiglocalmediaocean'
+alias graphqlstart='npm run debug'
 alias installprecommit='pre-commit install --overwrite'
 alias lint='pre-commit'
 alias vf2shell='python ./server/manage.py shell'
 alias vf2start='tools/debug'
+alias vf2startbe='gunicorn gunicorn_main:app --preload --config gunicorn_conf_local.py'
 
 # ---------------------------------------------------------------------- #
 # ---------------------------- FUNCTIONS-------------------------------- #
@@ -214,7 +218,25 @@ installdeps()
 # Print all available commands and how to use it
 # USAGE: bashmediaoceanhelp
 bashmediaoceanhelp() {
-    printf "==========================MEDIA OCEAN COMMANDS==========================\n\n\n"
+    printf "==========================MEDIA OCEAN ALAIASES==========================\n\n"
+
+    printf "     Start authz serivce -> authzstart\n"
+    printf "     Generate authz service token -> authztoken\n"
+    printf "     Connect to deploy server -> connectdeploy\n"
+    printf "     Start ctv serivce -> ctvstart\n"
+    printf "     Start mysql/mariadb shell -> entermysql\n"
+    printf "     Start postgres shell -> enterpsql\n"
+    printf "     Configure git repo locally with MO account -> gclm\n"
+    printf "     Start graphql serivce -> graphqlstart\n"
+    printf "     Install pre-commit on repo -> installprecommit\n"
+    printf "     Lint edited file with rules on pre-commit config file -> lint\n"
+    printf "     Start vf2 service shell -> vf2shell\n"
+    printf "     Start vf2 BE + FE serivce -> vf2start\n"
+    printf "     Start vf2 BE only serivce -> vf2startbe\n"
+    printf "\n\n\n"
+
+
+    printf "==========================MEDIA OCEAN FUNCTIONS==========================\n\n"
 
     printf "==========Apply mysql dump==========\n"
     printf "     applymysqldump <db name> <dump file name>\n\n"
@@ -228,23 +250,11 @@ bashmediaoceanhelp() {
     printf "==========Activate virtual environment==========\n"
     printf "     activate [env name (default: 'env')\n\n"
 
-    printf "==========Connect to deploy server==========\n"
-    printf "     connectdeploy\n\n"
-
     printf "==========Copy bashes to all remote machines==========\n"
     printf "     copybashtoallremotemachines\n\n"
 
     printf "==========Copy bashes to remote machine==========\n"
     printf "     copybashtoremotemachine <remote machine name>\n\n"
-
-    printf "==========Start ctv development server==========\n"
-    printf "     ctvstart\n\n"
-
-    printf "==========Enter mysql==========\n"
-    printf "     entermysql\n\n"
-
-    printf "==========Enter postgres==========\n"
-    printf "     enterpsql\n\n"
 
     printf "==========Generate mysql dump==========\n"
     printf "     generatemysqldump <db name> [<table names (separated by a whitespace)>]\n\n"
@@ -252,21 +262,6 @@ bashmediaoceanhelp() {
     printf "==========Generate psql dump==========\n"
     printf "     generatepsqldump <db name> [<table names (separated by a whitespace)>]\n\n"
 
-    printf "==========Config Git Locally==========\n"
-    printf "     gitconfiglocalmediaocean(gclm)\n\n"
-
     printf "==========Install project dependencies==========\n"
     printf "     installdeps <\"upgrade\" or \"no\"> [requirements file (default: 'requirements.txt')\n\n"
-
-    printf "==========Install pre commit==========\n"
-    printf "     installprecommit\n\n"
-
-    printf "==========Run Linter==========\n"
-    printf "     lint\n\n"
-
-    printf "==========Enter vf2 shell==========\n"
-    printf "     vf2shell\n\n"
-
-    printf "==========Start vf2 development server==========\n"
-    printf "     vf2start\n\n"
 }
