@@ -26,7 +26,7 @@ POSTGRES_HOST='localhost'
 
 alias authzstart='bash debug'
 alias authztoken='bash debug token'
-alias connectdeploy='sshuttle -r ckrauthamer@build.4cinsights.com 172.16.0.0/16'
+alias connectdeploy='sshuttle -r deploy 172.16.0.0/16'
 alias ctvstart='bash debug run'
 alias entermysql="mysql -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST -A"
 alias enterpsql="psql -U$POSTGRES_USER -h $POSTGRES_HOST"
