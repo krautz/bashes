@@ -137,6 +137,8 @@ copybashtoremotemachine()
 
 # Genetare a mysql dump
 # USAGE: generatemysqldump <db name> [<table name>]
+# NOTE: Tables definition are (CREATE TABLE) are not coppied by this command due to "-t" flag.
+#       To generate those, run the same command, but without the -t and add --no-data, to copy only table creation statements
 generatemysqldump()
 {
     # no table provided: dump all the db
