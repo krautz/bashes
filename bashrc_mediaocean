@@ -73,16 +73,11 @@ applypsqldump()
     psql -U$POSTGRES_USER -h $POSTGRES_HOST $1 < $2
 }
 
-# Get table from remote and apply a mysql or psql dump
-# USAGE: applyremotedump <remote dump file (format: "db name"___"table names separated by __".[mysql, psql])> <remote machine name>
-applyremotedump()
+
+# apply a postgres or mysql dump. psql extension to postgres and sql to mysql dumps.
+# USAGE: applydump <dump file (format: "db name"___"table names separated by __".[sql, psql])>
+applydump()
 {
-    # go to mediaocean folder
-    cd ~/mediaocean
-
-    # get dump
-    scp $2:$1 $1
-
     # get db name and which db to use
     file_split="${1//___/ }"
     file_split="${file_split//./ }"
@@ -101,6 +96,21 @@ applyremotedump()
         printf "Invalid dump file format. Valid formats: sql, psql\n"
         return
     fi
+}
+
+
+# Get table from remote and apply a mysql or psql dump
+# USAGE: applyremotedump <remote dump file (format: "db name"___"table names separated by __".[sql, psql])> <remote machine name>
+applyremotedump()
+{
+    # go to mediaocean folder
+    cd ~/mediaocean
+
+    # get dump
+    scp $2:$1 $1
+
+    # apply dump
+    applydump $1
 
     # move dump file to proper folder
     mv $1 db_dumps/
@@ -261,8 +271,11 @@ bashmediaoceanhelp() {
     printf "==========Apply psql dump==========\n"
     printf "     applypsqldump <db name> <dump file name>\n\n"
 
+    printf "==========Apply dump (it decides whether to call applymysqldump or applypsqldump)==========\n"
+    printf "     applydump <dump file (format: \"db name\"___\"table names separated by __\".[sql, psql])> <remote machine name>\n\n"
+
     printf "==========Apply psql or mysql dump from remote machine==========\n"
-    printf "     applyremotedump <remote dump file (format: \"db name\"___\"table names separated by __\".[mysql, psql])> <remote machine name>\n\n"
+    printf "     applyremotedump <remote dump file (format: \"db name\"___\"table names separated by __\".[sql, psql])> <remote machine name>\n\n"
 
     printf "==========Activate virtual environment==========\n"
     printf "     activate [env name (default: 'env')\n\n"
