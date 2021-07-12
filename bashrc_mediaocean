@@ -111,8 +111,7 @@ applyremotedump()
 # USAGE: copybashtoallremotemachine
 copybashtoallremotemachines()
 {
-    copybashtoremotemachine nbcu-dev-secure
-    copybashtoremotemachine nbcu-dev-non-secure
+    copybashtoremotemachine nbcu-dev
     copybashtoremotemachine dev-kilo
 }
 
