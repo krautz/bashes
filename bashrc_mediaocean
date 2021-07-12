@@ -31,7 +31,7 @@ alias ctvstart='bash debug run'
 alias entermysql="mysql -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST -A"
 alias enterpsql="psql -U$POSTGRES_USER -h $POSTGRES_HOST"
 alias gclm='gitconfiglocalmediaocean'
-alias graphqlstart='npm run debug'
+alias graphqlstart='rm -rf node_modules/@4cinsights/atlas/specs/uam_api/ctv.yml && ln ~/mediaocean/save/config_files/ctv.yml  node_modules/@4cinsights/atlas/specs/uam_api/ctv.yml && npm run debug'
 alias installprecommit='pre-commit install --overwrite'
 alias lint='pre-commit'
 alias vf2shell='python ./server/manage.py shell'
@@ -136,23 +136,39 @@ copybashtoremotemachine()
 }
 
 # Genetare a mysql dump
-# USAGE: generatemysqldump <db name> [<table name>]
-# NOTE: Tables definition are (CREATE TABLE) are not coppied by this command due to "-t" flag.
-#       To generate those, run the same command, but without the -t and add --no-data, to copy only table creation statements
+# USAGE: generatemysqldump <whether to copy table data, table defintion, or both> <db name> [<table name>]
+# $1 -> definition: table definition only (CREATE TABLE), will run with --no-data (-d)
+#       data: table data only, will run with --no-create-info (-t)
+#       both: table data and definitionm, will run without any flag
 generatemysqldump()
 {
-    # no table provided: dump all the db
-    if [ -z "$2" ]
+    # prepare mysqldump command
+    if [ "$1" == "definition" ]
     then
-        mysqldump -t -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $1 | pv > $1.sql
+        command="mysqldump -d"
+    elif [ "$1" == "data" ]
+    then
+        command="mysqldump -t"
+    elif [ "$1" == "both" ]
+    then
+        command="mysqldump"
+    else
+        echo "Invalid first parameter. It must be 'definition', 'data' or 'both'"
+        return
+    fi
+
+    # no table provided: dump all the db
+    if [ -z "$3" ]
+    then
+        $command -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $2 | pv > $2.sql
 
     # table provided: dump db specific table
     else
-        mysqldump -t -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $1 $2 | pv > "$1___${2// /__}.sql"
+        $command -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $2 $3 | pv > "$2___${3// /__}.sql"
     fi
 
     # show generated file name
-    echo "$1___${2// /__}.sql"
+    echo "$2___${3// /__}.sql"
 }
 
 
@@ -259,7 +275,7 @@ bashmediaoceanhelp() {
     printf "     copybashtoremotemachine <remote machine name>\n\n"
 
     printf "==========Generate mysql dump==========\n"
-    printf "     generatemysqldump <db name> [<table names (separated by a whitespace)>]\n\n"
+    printf "     generatemysqldump <dump type: 'definition' || 'data' || 'both'> <db name> [<table names (separated by a whitespace)>]\n\n"
 
     printf "==========Generate psql dump==========\n"
     printf "     generatepsqldump <db name> [<table names (separated by a whitespace)>]\n\n"
