@@ -75,7 +75,7 @@ applypsqldump()
 
 
 # apply a postgres or mysql dump. psql extension to postgres and sql to mysql dumps.
-# USAGE: applydump <dump file (format: "db name"___"table names separated by __".[sql, psql])>
+# USAGE: applydump <dump file (format: "db name"___"table names separated by __".[sql, psql][.<mode>])>
 applydump()
 {
     # get db name and which db to use
@@ -100,7 +100,7 @@ applydump()
 
 
 # Get table from remote and apply a mysql or psql dump
-# USAGE: applyremotedump <remote dump file (format: "db name"___"table names separated by __".[sql, psql])> <remote machine name>
+# USAGE: applyremotedump <remote dump file (format: "db name"___"table names separated by __".[sql, psql][.<mode>])> <remote machine name>
 applyremotedump()
 {
     # go to mediaocean folder
@@ -155,12 +155,15 @@ generatemysqldump()
     if [ "$1" == "definition" ]
     then
         command="mysqldump -d"
+        db_file_name_suffix=".definition"
     elif [ "$1" == "data" ]
     then
         command="mysqldump -t"
+        db_file_name_suffix=".data"
     elif [ "$1" == "both" ]
     then
         command="mysqldump"
+        db_file_name_suffix=""
     else
         echo "Invalid first parameter. It must be 'definition', 'data' or 'both'"
         return
@@ -170,14 +173,13 @@ generatemysqldump()
     if [ -z "$3" ]
     then
         $command -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $2 | pv > $2.sql
+        echo "$2.sql$db_file_name_suffix"
 
     # table provided: dump db specific table
     else
         $command -u $MARIADB_USER -p$MARIADB_PASSWORD -h $MARIADB_HOST $2 $3 | pv > "$2___${3// /__}.sql"
+        echo "$2___${3// /__}.sql$db_file_name_suffix"
     fi
-
-    # show generated file name
-    echo "$2___${3// /__}.sql"
 }
 
 
@@ -189,14 +191,13 @@ generatepsqldump()
     if [ -z "$2" ]
     then
         pg_dump --verbose -U$POSTGRES_USER -h $POSTGRES_HOST -d $1 > "$1.psql"
+        echo "$1.psql"
 
     # table provided: dump db specific tables
     else
         pg_dump --verbose -U$POSTGRES_USER -h $POSTGRES_HOST -d $1 -t ${2// / -t } > "$1___${2// /__}.psql"
+        echo "$1___${2// /__}.psql"
     fi
-
-    # show generated file name
-    echo "$1___${2// /__}.psql"
 }
 
 
@@ -272,10 +273,10 @@ bashmediaoceanhelp() {
     printf "     applypsqldump <db name> <dump file name>\n\n"
 
     printf "==========Apply dump (it decides whether to call applymysqldump or applypsqldump)==========\n"
-    printf "     applydump <dump file (format: \"db name\"___\"table names separated by __\".[sql, psql])> <remote machine name>\n\n"
+    printf "     applydump <dump file (format: \"db name\"___\"table names separated by __\".[sql, psql][.<mode>])> <remote machine name>\n\n"
 
     printf "==========Apply psql or mysql dump from remote machine==========\n"
-    printf "     applyremotedump <remote dump file (format: \"db name\"___\"table names separated by __\".[sql, psql])> <remote machine name>\n\n"
+    printf "     applyremotedump <remote dump file (format: \"db name\"___\"table names separated by __\".[sql, psql][.<mode>])> <remote machine name>\n\n"
 
     printf "==========Activate virtual environment==========\n"
     printf "     activate [env name (default: 'env')\n\n"
